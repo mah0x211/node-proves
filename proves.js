@@ -308,6 +308,14 @@ function isURL( arg )
     return false;
 }
 
+function isExists( arg )
+{
+    return ( 
+        ( typeof arg === 'string' ) &&
+        fs.existsSync( arg )
+    );
+}
+
 function isDir( arg ){
     return ( 
         ( typeof arg === 'string' ) &&
@@ -338,6 +346,7 @@ return {
         regexp: isRegExp,
         email: isEmail,
         emailLoose: isEmailLoose,
+        exists: isExists,
         file: isFile,
         dir: isDir
     }
