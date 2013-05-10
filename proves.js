@@ -310,26 +310,64 @@ function isURL( arg )
 
 function isExists( arg )
 {
-    return ( 
-        ( typeof arg === 'string' ) &&
-        fs.existsSync( arg )
-    );
+    if( arguments.length < 2 ){
+        return fs.existsSync( arg );
+    }
+    
+    fs.exists( arg, arguments[1] );
 }
 
-function isDir( arg ){
-    return ( 
-        ( typeof arg === 'string' ) &&
-        fs.existsSync( arg ) && 
-        fs.statSync( arg ).isDirectory()
-    );
+
+function isDir( arg )
+{
+    if( arguments.length < 2 ){
+        return ( 
+            fs.existsSync( arg ) && 
+            fs.statSync( arg ).isDirectory()
+        );
+    }
+    else
+    {
+        var cb = arguments[1];
+    
+        fs.exists( arg, function( isa )
+        {
+            if( isa ){
+                fs.stat( arg, function( err, stat ){
+                    cb( err, stat && stat.isDirectory() );
+                });
+            }
+            else {
+                cb( undefined, false );
+            }
+        });
+    }
 }
 
-function isFile( arg ){
-    return ( 
-        ( typeof arg === 'string' ) &&
-        fs.existsSync( arg ) && 
-        fs.statSync( arg ).isFile()
-    );
+function isFile( arg )
+{
+    if( arguments.length < 2 ){
+        return ( 
+            fs.existsSync( arg ) && 
+            fs.statSync( arg ).isFile()
+        );
+    }
+    else
+    {
+        var cb = arguments[1];
+        
+        fs.exists( arg, function( isa )
+        {
+            if( isa ){
+                fs.stat( arg, function( err, stat ){
+                    cb( err, stat && stat.isFile() );
+                });
+            }
+            else {
+                cb( undefined, false );
+            }
+        });
+    }
 }
 
 return {
