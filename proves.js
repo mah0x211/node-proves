@@ -7,7 +7,8 @@
  */
 "use strict";
 // dependencies
-var fs = require('fs');
+var fs = require('fs'),
+    path = require('path');
 
 // @src:begin
 function init_proves(){
@@ -311,30 +312,35 @@ function isURL( arg )
 function isExists( arg )
 {
     if( arguments.length < 2 ){
-        return fs.existsSync( arg );
-    }
-    
-    fs.exists( arg, arguments[1] );
-}
-
-
-function isDir( arg )
-{
-    if( arguments.length < 2 ){
-        return ( 
-            fs.existsSync( arg ) && 
-            fs.statSync( arg ).isDirectory()
-        );
+        arg = path.resolve( path.normalize( arg ) );
+        return fs.existsSync( arg ) ? arg : false;
     }
     else
     {
         var cb = arguments[1];
-    
-        fs.exists( arg, function( isa )
+        
+        arg = path.resolve( path.normalize( arg ) );
+        fs.exists( arg, function(isa){
+            cb( isa ? arg : false );
+        });
+    }
+}
+
+function isDir( arg )
+{
+    if( arguments.length < 2 ){
+        arg = isExists( arg );
+        return ( arg && fs.statSync( arg ).isDirectory() && arg );
+    }
+    else
+    {
+        var cb = arguments[1];
+        
+        isExists( arg, function( isa )
         {
             if( isa ){
-                fs.stat( arg, function( err, stat ){
-                    cb( err, stat && stat.isDirectory() );
+                fs.stat( isa, function( err, stat ){
+                    cb( err, stat && stat.isDirectory() && isa );
                 });
             }
             else {
@@ -344,23 +350,22 @@ function isDir( arg )
     }
 }
 
+
 function isFile( arg )
 {
     if( arguments.length < 2 ){
-        return ( 
-            fs.existsSync( arg ) && 
-            fs.statSync( arg ).isFile()
-        );
+        arg = isExists( arg );
+        return ( arg && fs.statSync( arg ).isFile() && arg );
     }
     else
     {
         var cb = arguments[1];
         
-        fs.exists( arg, function( isa )
+        isExists( arg, function( isa )
         {
             if( isa ){
-                fs.stat( arg, function( err, stat ){
-                    cb( err, stat && stat.isFile() );
+                fs.stat( isa, function( err, stat ){
+                    cb( err, stat && stat.isFile() && isa );
                 });
             }
             else {
