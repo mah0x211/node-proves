@@ -156,26 +156,63 @@ function setKeyVal( obj, keys, val )
 
 function isBool( arg )
 {
-    return 'boolean' === typeof( 
-        arguments.length === 1 ? arg : 
-        getKeyVal( arguments[0], arguments[1] )
-    );
+    var argc = arguments.length;
+    
+    if( argc < 2 ){
+        return typeof arg === 'boolean';
+    }
+    else if( typeof arguments[0] === 'object' )
+    {
+        arg = getKeyVal( arguments[0], arguments[1] );
+        if( typeof arg !== 'boolean' ){
+            return false;
+        }
+        
+        return ( argc < 3 || ( arg === arguments[2] ) );
+    }
+    
+    return ( typeof arg === 'boolean' && arg === arguments[1] );
 }
 
 function isString( arg )
 {
-    return 'string' === typeof(
-        arguments.length === 1 ? arg :
-        getKeyVal( arguments[0], arguments[1] )
-    );
+    var argc = arguments.length;
+    
+    if( argc < 2 ){
+        return typeof arg === 'string';
+    }
+    else if( typeof arguments[0] === 'object' )
+    {
+        arg = getKeyVal( arguments[0], arguments[1] );
+        if( typeof arg !== 'string' ){
+            return false;
+        }
+        
+        return ( argc < 3 || arg === arguments[2] );
+    
+    }
+    
+    return ( typeof arg === 'string' && arg === arguments[1] );
 }
 
 function isNumber( arg )
 {
-    return isFinite( 
-        arguments.length < 2 ? arg :
-        getKeyVal( arguments[0], arguments[1] )
-    );
+    var argc = arguments.length;
+    
+    if( argc < 2 ){
+        return isFinite( arg );
+    }
+    else if( typeof arguments[0] === 'object' )
+    {
+        arg = getKeyVal( arguments[0], arguments[1] );
+        if( !isFinite( arg ) ){
+            return false;
+        }
+        
+        return ( argc < 3 || arg === arguments[2] );
+    }
+    
+    return ( isFinite( arg ) && arg === arguments[1] );
 }
 
 function isFunction( arg )
