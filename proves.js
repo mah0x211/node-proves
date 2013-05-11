@@ -190,7 +190,6 @@ function isString( arg )
         }
         
         return ( argc < 3 || arg === arguments[2] );
-    
     }
     
     return ( typeof arg === 'string' && arg === arguments[1] );
@@ -311,9 +310,16 @@ function isURL( arg )
 
 function isExists( arg )
 {
-    if( arguments.length < 2 ){
-        arg = path.resolve( path.normalize( arg ) );
-        return fs.existsSync( arg ) ? arg : false;
+    if( arguments.length < 2 )
+    {
+        if( arg ){
+            arg = path.resolve( path.normalize( arg ) );
+            return fs.existsSync( arg ) ? arg : false;
+        }
+        return false;
+    }
+    else if( !arg ){
+        arguments[1]( false );
     }
     else
     {
@@ -331,6 +337,9 @@ function isDir( arg )
     if( arguments.length < 2 ){
         arg = isExists( arg );
         return ( arg && fs.statSync( arg ).isDirectory() && arg );
+    }
+    else if( !arg ){
+        arguments[1]( undefined, false );
     }
     else
     {
@@ -356,6 +365,9 @@ function isFile( arg )
     if( arguments.length < 2 ){
         arg = isExists( arg );
         return ( arg && fs.statSync( arg ).isFile() && arg );
+    }
+    else if( !arg ){
+        arguments[1]( undefined, false );
     }
     else
     {

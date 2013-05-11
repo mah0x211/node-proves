@@ -5,7 +5,7 @@
         "name": "Masatoshi Teruya",
         "url": "https://twitter.com/mah0x211"
     },
-    "version": "0.12.1",
+    "version": "0.12.2",
     "main": "./proves",
     "repository": {
         "type": "git",
